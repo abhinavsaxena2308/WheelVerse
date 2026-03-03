@@ -1,8 +1,8 @@
-import Navbar from './components/Navbar/Navbar'
-import HeroScroll from './components/HeroScroll/HeroScroll'
-import SpecStrip from './components/SpecStrip/SpecStrip'
-import Features from './components/Features/Features'
-import Footer from './components/Footer/Footer'
+import Navbar from './components/Navbar'
+import HeroScroll from './components/HeroScroll'
+import SpecStrip from './components/SpecStrip'
+import Features from './components/Features'
+import Footer from './components/Footer'
 
 export default function App() {
     return (

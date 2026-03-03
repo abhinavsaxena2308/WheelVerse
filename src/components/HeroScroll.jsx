@@ -168,7 +168,7 @@ export default function HeroScroll() {
     const loadPct = Math.floor((loadedCount / TOTAL_FRAMES) * 100)
 
     return (
-        <section ref={sectionRef} className="h-[400vh] relative" id="hero">
+        <section ref={sectionRef} className="h-[400vh] relative " id="hero">
             <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
 
                 {/* Canvas */}
