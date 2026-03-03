@@ -1,0 +1,53 @@
+/* ════════════════════════════════════════════════
+   WHEELVERSE — Global Styles
+   ════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --border: rgba(255, 255, 255, 0.07);
+    --txt: #e8e8e8;
+    --txt-muted: #6a6a6a;
+    --nav-h: 70px;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Rajdhani', 'Inter', sans-serif;
+    --font-title: 'Bebas Neue', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--txt);
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
