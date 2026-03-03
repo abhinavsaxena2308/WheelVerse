@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import styles from './SpecStrip.module.css'
 
 const specs = [
     { value: '2.9', unit: 's', label: '0–100 km/h' },
@@ -16,7 +15,8 @@ export default function SpecStrip() {
         const obs = new IntersectionObserver(entries => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
-                    e.target.classList.add(styles.itemVisible)
+                    e.target.classList.add('opacity-100', 'translate-y-0')
+                    e.target.classList.remove('opacity-0', 'translate-y-[18px]')
                     obs.unobserve(e.target)
                 }
             })
@@ -26,26 +26,25 @@ export default function SpecStrip() {
     }, [])
 
     return (
-        <section className={styles.strip} id="performance" aria-label="Vehicle specifications">
-            <div className={styles.inner}>
+        <section className="bg-surface border-y border-white/7 py-[52px]" id="performance" aria-label="Vehicle specifications">
+            <div className="max-w-[860px] mx-auto px-8 flex items-center justify-center flex-wrap gap-12">
                 {specs.map((s, i) => (
-                    <>
+                    <div key={s.label} className="flex items-center gap-12">
                         <div
-                            key={s.label}
                             ref={el => itemsRef.current[i] = el}
-                            className={styles.item}
+                            className="flex flex-col items-center gap-1.5 text-center opacity-0 translate-y-[18px] transition-all duration-[0.6s]"
                             style={{ transitionDelay: `${i * 0.1}s` }}
                         >
-                            <span className={styles.value}>
+                            <span className="font-title text-[56px] font-normal tracking-wide text-white leading-none">
                                 {s.value}
-                                {s.unit && <small>{s.unit}</small>}
+                                {s.unit && <small className="text-2xl text-white/35 ml-0.5">{s.unit}</small>}
                             </span>
-                            <span className={styles.label}>{s.label}</span>
+                            <span className="text-[10px] font-normal tracking-[0.22em] uppercase text-[#6a6a6a]">{s.label}</span>
                         </div>
                         {i < specs.length - 1 && (
-                            <div key={`div-${i}`} className={styles.divider} aria-hidden="true" />
+                            <div className="hidden sm:block w-px h-12 bg-white/7" aria-hidden="true" />
                         )}
-                    </>
+                    </div>
                 ))}
             </div>
         </section>

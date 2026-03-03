@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import styles from './Features.module.css'
 
 const cards = [
     {
@@ -59,7 +58,8 @@ export default function Features() {
         const obs = new IntersectionObserver(entries => {
             entries.forEach(e => {
                 if (e.isIntersecting) {
-                    e.target.classList.add(styles.cardVisible)
+                    e.target.classList.add('opacity-100', 'translate-y-0')
+                    e.target.classList.remove('opacity-0', 'translate-y-7')
                     obs.unobserve(e.target)
                 }
             })
@@ -69,21 +69,25 @@ export default function Features() {
     }, [])
 
     return (
-        <section className={styles.section} id="technology" aria-label="Key features">
-            <div className={styles.inner}>
-                <p className={styles.eyebrow}>Engineering Excellence</p>
-                <h2 className={styles.title}>Built Without Compromise</h2>
-                <div className={styles.grid}>
+        <section className="py-[120px] px-8 bg-black" id="technology" aria-label="Key features">
+            <div className="max-w-[1200px] mx-auto">
+                <p className="text-[10px] font-medium tracking-ultra uppercase text-white/28 mb-3.5">Engineering Excellence</p>
+                <h2 className="font-title text-[clamp(40px,5vw,72px)] font-normal tracking-wider text-white mb-[60px] leading-none">Built Without Compromise</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/7">
                     {cards.map((c, i) => (
                         <div
                             key={c.id}
                             ref={el => cardsRef.current[i] = el}
-                            className={styles.card}
+                            className="bg-black p-10 flex flex-col gap-3.5 opacity-0 translate-y-7 transition-all duration-700 
+                         group relative overflow-hidden hover:bg-white/[0.025]"
                             style={{ transitionDelay: `${i * 0.12}s` }}
                         >
-                            <div className={styles.icon}>{c.icon}</div>
-                            <h3 className={styles.cardTitle}>{c.title}</h3>
-                            <p className={styles.cardDesc}>{c.desc}</p>
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent scale-x-0 transition-transform duration-400 group-hover:scale-x-100" />
+                            <div className="w-11 h-11 opacity-85 group-hover:opacity-100 transition-opacity">
+                                {c.icon}
+                            </div>
+                            <h3 className="font-display text-[17px] font-semibold tracking-wider text-white mt-2">{c.title}</h3>
+                            <p className="text-[13px] font-light leading-[1.75] text-white/38">{c.desc}</p>
                         </div>
                     ))}
                 </div>
