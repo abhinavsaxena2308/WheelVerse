@@ -9,17 +9,17 @@ export default function Navbar() {
     }, [])
 
     return (
-        <nav className={`fixed top-4 left-6 right-6 z-[1000] h-[60px] 
-      bg-[#121212]/70 backdrop-blur-xl rounded-full border border-white/10 
+        <nav className={`fixed top-4 right-6 left-6 z-[1000] h-[60px] 
+      rounded-full border border-white/10 bg-[#121212]/70 backdrop-blur-xl 
       shadow-[0_8px_32px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.05)]
       transition-all duration-700 ease-out 
-      ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`} aria-label="Main navigation">
+      ${visible ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0'}`} aria-label="Main navigation">
 
-            <div className="max-w-[1400px] mx-auto h-full px-7 flex items-center justify-between gap-6">
+            <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between gap-6 px-7">
 
                 {/* Logo */}
-                <a href="#" className="flex items-center gap-2.5 no-underline shrink-0 group" aria-label="WheelVerse Home">
-                    <span className="w-8.5 h-8.5 block animate-spin-slow filter drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">
+                <a href="#" className="group flex shrink-0 items-center gap-2.5 no-underline" aria-label="WheelVerse Home">
+                    <span className="animate-spin-slow block h-8.5 w-8.5 filter drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">
                         <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <circle cx="22" cy="22" r="20" stroke="white" strokeWidth="1.5" strokeOpacity="0.7" />
                             <circle cx="22" cy="22" r="3" fill="white" />
@@ -33,20 +33,20 @@ export default function Navbar() {
                             <line x1="12" y1="32" x2="6.34" y2="37.66" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.8" />
                         </svg>
                     </span>
-                    <span className="font-display text-[22px] font-bold tracking-wider leading-none">
+                    <span className="font-display text-[22px] font-bold leading-none tracking-wider">
                         <span className="text-white">Wheel</span><span className="text-[#666]">Verse</span>
                     </span>
                 </a>
 
                 {/* Links */}
-                <ul className="hidden md:flex items-center gap-9 ml-auto list-none" role="list">
+                <ul className="ml-auto hidden items-center gap-9 list-none md:flex" role="list">
                     {['Models', 'Performance', 'Technology', 'Heritage'].map(link => (
                         <li key={link}>
                             <a href={`#${link.toLowerCase()}`}
-                                className="text-[#cfcfcf] no-underline text-xs font-normal tracking-widest uppercase relative
+                                className="relative text-xs font-normal uppercase tracking-widest text-[#cfcfcf] no-underline
                             transition-colors duration-300 hover:text-white
-                            after:content-[''] after:absolute after:-bottom-0.5 after:left-0 after:w-0 after:h-px 
-                            after:bg-white/60 after:transition-all after:duration-300 hover:after:w-full">
+                            after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 
+                            after:bg-white/60 after:transition-all after:duration-300 hover:after:w-full after:content-['']">
                                 {link}
                             </a>
                         </li>
@@ -55,9 +55,9 @@ export default function Navbar() {
 
                 {/* CTA */}
                 <a href="#configure"
-                    className="inline-flex items-center px-5.5 py-2 border border-white/20 rounded-sm
-                    text-[#cfcfcf] no-underline text-[11px] font-medium tracking-widest uppercase bg-transparent
-                    transition-all duration-300 hover:bg-white/10 hover:text-white hover:border-white/40 shrink-0">
+                    className="bg-transparent px-5.5 py-2 shrink-0 rounded-sm border border-white/20
+                    text-[11px] font-medium uppercase tracking-widest text-[#cfcfcf] no-underline
+                    transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white">
                     Configure
                 </a>
             </div>

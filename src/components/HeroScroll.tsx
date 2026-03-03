@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import TextOverlay from './TextOverlay'
 
 const TOTAL_FRAMES = 190
 const FRAME_PREFIX = '/frames/ezgif-frame-'
 const FRAME_EXT = '.png'
 
-function padNum(n, digits) {
+function padNum(n: number, digits: number) {
     return String(n).padStart(digits, '0')
 }
 
 // Linear interpolation for smoothing
-const lerp = (start, end, factor) => start + (end - start) * factor
+const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor
 
 export default function HeroScroll() {
-    const canvasRef = useRef(null)
-    const framesRef = useRef([])
-    const rafRef = useRef(null)
-    const sectionRef = useRef(null)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const framesRef = useRef<(HTMLImageElement | null)[]>([])
+    const rafRef = useRef<number | null>(null)
+    const sectionRef = useRef<HTMLElement>(null)
 
     // Animation state refs for lerping
     const scrollProgress = useRef(0)
@@ -28,15 +29,17 @@ export default function HeroScroll() {
     const [glowActive, setGlowActive] = useState(false)
     const [heroOpacity, setHeroOpacity] = useState(1)
     const [scrollIndicatorVisible, setScrollIndicatorVisible] = useState(false)
+    const [overlayProgress, setOverlayProgress] = useState(0)
 
     // ── Draw a single frame with COVER fit ──
-    const drawFrame = useCallback((idx) => {
+    const drawFrame = useCallback((idx: number) => {
         const canvas = canvasRef.current
         if (!canvas) return
         const img = framesRef.current[idx]
         if (!img || !img.naturalWidth) return
 
         const ctx = canvas.getContext('2d', { alpha: false })
+        if (!ctx) return
         const cw = canvas.width
         const ch = canvas.height
         const iw = img.naturalWidth
@@ -136,6 +139,9 @@ export default function HeroScroll() {
             // Smooth progress using lerp (0.1 for nice inertia)
             smoothProgress.current = lerp(smoothProgress.current, scrollProgress.current, 0.1)
 
+            // Update overlay state for re-render
+            setOverlayProgress(smoothProgress.current)
+
             // Only draw if index changed substantially
             const targetIdx = Math.min(
                 Math.floor(smoothProgress.current * (TOTAL_FRAMES - 1)),
@@ -168,19 +174,22 @@ export default function HeroScroll() {
     const loadPct = Math.floor((loadedCount / TOTAL_FRAMES) * 100)
 
     return (
-        <section ref={sectionRef} className="h-[400vh] relative " id="hero">
-            <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
+        <section ref={sectionRef} className="relative h-[400vh]" id="hero">
+            <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
 
                 {/* Canvas */}
                 <canvas
                     ref={canvasRef}
-                    className={`absolute inset-0 w-full h-full block transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+                    className={`absolute inset-0 block h-full w-full transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}
                     aria-label="Rotating car animation"
                     role="img"
                 />
 
+                {/* Transitions Text Overlay */}
+                <TextOverlay progress={overlayProgress} />
+
                 {/* Bottom Vignette */}
-                <div className="absolute inset-0 z-[2] pointer-events-none 
+                <div className="pointer-events-none absolute inset-0 z-[2] 
           bg-gradient-to-b from-black/30 via-transparent via-[12%] via-[82%] to-black/75" />
 
                 {/* Headlight Glow */}
@@ -190,40 +199,40 @@ export default function HeroScroll() {
 
                 {/* Hero Content */}
                 <div
-                    className="absolute top-0 left-0 right-0 pt-24 px-10 md:px-16 z-10 pointer-events-none transition-opacity duration-[0.12s]"
+                    className="pointer-events-none absolute top-0 right-0 left-0 z-10 px-10 pt-24 transition-opacity duration-[0.12s] md:px-16"
                     style={{ opacity: isReady ? heroOpacity : 0 }}
                 >
-                    <div className={`inline-flex items-center gap-2 px-3.5 py-1.25 border border-white/15 rounded-full 
-            text-[10px] font-medium tracking-widest uppercase text-white/45 mb-4.5
-            transition-all duration-700 delay-100 ${textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2.5'}`}>
-                        <span className="w-1.25 h-1.25 rounded-full bg-white/50 animate-pulse" />
+                    <div className={`mb-4.5 inline-flex items-center gap-2 rounded-full border border-white/15 px-3.5 py-1.25 
+            text-[10px] font-medium uppercase tracking-widest text-white/45
+            transition-all duration-700 delay-100 ${textVisible ? 'translate-y-0 opacity-100' : 'translate-y-2.5 opacity-0'}`}>
+                        <span className="h-1.25 w-1.25 animate-pulse rounded-full bg-white/50" />
                         <span>2025 Edition · Black Series</span>
                     </div>
 
-                    <h1 className="font-title text-[clamp(54px,7vw,104px)] leading-[0.9] tracking-wider text-white mb-4.5">
-                        <span className={`block transition-all duration-750 delay-[0.3s] ${textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+                    <h1 className="mb-4.5 font-title text-[clamp(54px,7vw,104px)] leading-[0.9] tracking-wider text-white">
+                        <span className={`block transition-all duration-750 delay-[0.3s] ${textVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
                             THE ART OF
                         </span>
                         <span className={`block bg-gradient-to-r from-white to-[#777] bg-clip-text text-transparent
-              transition-all duration-750 delay-[0.5s] ${textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+              transition-all duration-750 delay-[0.5s] ${textVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
                             MOTION
                         </span>
                     </h1>
 
-                    <p className={`text-[12px] font-light tracking-[0.22em] uppercase text-white/30 mb-7.5
-            transition-all duration-750 delay-[0.7s] ${textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2.5'}`}>
+                    <p className={`mb-7.5 text-[12px] font-light uppercase tracking-[0.22em] text-white/30
+            transition-all duration-750 delay-[0.7s] ${textVisible ? 'translate-y-0 opacity-100' : 'translate-y-2.5 opacity-0'}`}>
                         Precision-engineered. Beautifully relentless.
                     </p>
 
-                    <div className={`flex items-center gap-4 pointer-events-auto 
-            transition-all duration-750 delay-[0.9s] ${textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2.5'}`}>
-                        <a href="#performance" className="inline-flex items-center px-7 py-2.75 bg-white text-black no-underline text-[11px] font-semibold 
-              tracking-widest uppercase rounded-sm transition-all duration-300 hover:bg-[#e0e0e0] hover:-translate-y-0.5 hover:shadow-[0_12px_36px_rgba(255,255,255,0.12)]">
+                    <div className={`pointer-events-auto flex items-center gap-4 
+            transition-all duration-750 delay-[0.9s] ${textVisible ? 'translate-y-0 opacity-100' : 'translate-y-2.5 opacity-0'}`}>
+                        <a href="#performance" className="rounded-sm bg-white px-7 py-2.75 text-[11px] font-semibold 
+              uppercase tracking-widest text-black no-underline transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e0e0e0] hover:shadow-[0_12px_36px_rgba(255,255,255,0.12)]">
                             Explore Model
                         </a>
-                        <a href="#technology" className="inline-flex items-center gap-2 px-5.5 py-2.75 border border-white/18 text-white/55 no-underline 
-              text-[11px] font-medium tracking-widest uppercase rounded-sm bg-transparent transition-all duration-300 
-              hover:border-white/40 hover:text-white/85 hover:bg-white/5">
+                        <a href="#technology" className="inline-flex items-center gap-2 rounded-sm border border-white/18 bg-transparent px-5.5 py-2.75 
+              text-[11px] font-medium uppercase tracking-widest text-white/55 no-underline transition-all 
+              duration-300 hover:bg-white/5 hover:text-white/85 hover:border-white/40">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="18" height="18">
                                 <circle cx="12" cy="12" r="10" /><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none" />
                             </svg>
@@ -234,25 +243,25 @@ export default function HeroScroll() {
 
                 {/* Scroll Indicator */}
                 <div
-                    className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 
+                    className={`absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 
             transition-opacity duration-800 ${scrollIndicatorVisible && isReady ? 'opacity-100' : 'opacity-0'}`}
                     style={{ opacity: heroOpacity > 0.1 ? heroOpacity : 0 }}
                 >
-                    <div className="w-px h-[50px] bg-gradient-to-b from-white/60 to-transparent origin-top animate-[scrollPulse_2s_ease_infinite]" />
-                    <span className="text-[8px] font-medium tracking-[0.28em] text-white/28 uppercase">SCROLL</span>
+                    <div className="h-[50px] w-px origin-top animate-[scrollPulse_2s_ease_infinite] bg-gradient-to-b from-white/60 to-transparent" />
+                    <span className="text-[8px] font-medium uppercase tracking-[0.28em] text-white/28">SCROLL</span>
                 </div>
 
                 {/* Loading Overlay */}
                 {!isReady && (
-                    <div className="absolute inset-0 bg-black z-[100] flex items-center justify-center">
+                    <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black">
                         <div className="flex flex-col items-center gap-7">
                             <div className="font-display text-[38px] font-bold tracking-wider">
                                 <span className="text-white">Wheel</span><span className="text-[#555]">Verse</span>
                             </div>
-                            <div className="w-[240px] h-px bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-px w-[240px] overflow-hidden rounded-full bg-white/10">
                                 <div className="h-full bg-gradient-to-r from-[#333] to-white transition-all duration-150" style={{ width: `${loadPct}%` }} />
                             </div>
-                            <p className="text-[10px] font-light tracking-widest text-white/28 uppercase font-sans">Loading {loadPct}%</p>
+                            <p className="font-sans text-[10px] font-light uppercase tracking-widest text-white/28">Loading {loadPct}%</p>
                         </div>
                     </div>
                 )}

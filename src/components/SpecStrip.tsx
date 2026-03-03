@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 
-const specs = [
+interface Spec {
+    value: string;
+    unit: string;
+    label: string;
+}
+
+const specs: Spec[] = [
     { value: '2.9', unit: 's', label: '0–100 km/h' },
     { value: '340', unit: 'hp', label: 'Peak Power' },
     { value: '290', unit: 'km/h', label: 'Top Speed' },
@@ -8,7 +14,7 @@ const specs = [
 ]
 
 export default function SpecStrip() {
-    const itemsRef = useRef([])
+    const itemsRef = useRef<(HTMLDivElement | null)[]>([])
 
     useEffect(() => {
         if (!('IntersectionObserver' in window)) return
@@ -26,23 +32,23 @@ export default function SpecStrip() {
     }, [])
 
     return (
-        <section className="bg-surface border-y border-white/7 py-[52px]" id="performance" aria-label="Vehicle specifications">
-            <div className="max-w-[860px] mx-auto px-8 flex items-center justify-center flex-wrap gap-12">
+        <section className="bg-transparent border-y border-white/7 py-[52px]" id="performance" aria-label="Vehicle specifications">
+            <div className="mx-auto flex max-w-[860px] flex-wrap items-center justify-center gap-12 px-8">
                 {specs.map((s, i) => (
                     <div key={s.label} className="flex items-center gap-12">
                         <div
-                            ref={el => itemsRef.current[i] = el}
-                            className="flex flex-col items-center gap-1.5 text-center opacity-0 translate-y-[18px] transition-all duration-[0.6s]"
+                            ref={(el) => { itemsRef.current[i] = el; }}
+                            className="flex translate-y-[18px] flex-col items-center gap-1.5 opacity-0 text-center transition-all duration-[0.6s]"
                             style={{ transitionDelay: `${i * 0.1}s` }}
                         >
-                            <span className="font-title text-[56px] font-normal tracking-wide text-white leading-none">
+                            <span className="font-title leading-none text-[56px] font-normal tracking-wide text-white">
                                 {s.value}
-                                {s.unit && <small className="text-2xl text-white/35 ml-0.5">{s.unit}</small>}
+                                {s.unit && <small className="text-white/35 ml-0.5 text-2xl">{s.unit}</small>}
                             </span>
-                            <span className="text-[10px] font-normal tracking-[0.22em] uppercase text-[#6a6a6a]">{s.label}</span>
+                            <span className="text-[10px] font-normal uppercase tracking-[0.22em] text-[#6a6a6a]">{s.label}</span>
                         </div>
                         {i < specs.length - 1 && (
-                            <div className="hidden sm:block w-px h-12 bg-white/7" aria-hidden="true" />
+                            <div className="bg-white/7 hidden h-12 w-px sm:block" aria-hidden="true" />
                         )}
                     </div>
                 ))}
